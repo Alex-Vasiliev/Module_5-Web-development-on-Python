@@ -2,26 +2,36 @@ import requests
 from datetime import datetime
 
 
-def exchange_rates(date, value, val_code):
-    url = f"https://bank.gov.ua/NBU_Exchange/exchange_site?start={date}&valcode={val_code}&sort=exchangedate&order=desc&json"
-    response = requests.get(url)
-    data = response.json()
-    if "error" in data:
-        print("Помилка: Неможливо отримати погодні дані")
-        return
+def exchange_rates(value, val_code):
+    try:
+        date = datetime.now().strftime('%Y%m%d')
+        url = f"https://bank.gov.ua/NBU_Exchange/exchange_site?start={date}&valcode={val_code}&sort=exchangedate&order=desc&json"
+        response = requests.get(url)
+        data = response.json()
+        response.raise_for_status()
 
-    exchange = data[0]['rate']
-    valcode = data[0]['cc']
-    calc_rate = value * exchange
-    result = round(calc_rate, 2)
+        exchange = data[0]['rate']
+        valcode = data[0]['cc']
+        calc_rate = value * exchange
+        result = round(calc_rate, 2)
 
-    print("*" * 50)
-    print("Поточний курс:", 1, valcode, f"= {exchange} UAH")
-    print(f"Розрахунок: {value} {valcode} = {result} UAH")
-    print("*" * 50)
+        print("*" * 35)
+        print("Current rate:", 1, valcode, f"= {exchange} UAH")
+        print(f"Calculation: {value} {valcode} = {result} UAH")
+        print("*" * 35, "\n")
+    except requests.exceptions.HTTPError as err:
+        print("!" * 50)
+        print(f"HTTP request error: {err}")
+        print("!" * 50, "\n")
+    except requests.exceptions.RequestException as err:
+        print("!" * 50)
+        print(f"Request error: {err}")
+        print("!" * 50, "\n")
+    except Exception as err:
+        print("!" * 50)
+        print(f"Unexpected error: {err}")
+        print("!" * 50, "\n")
 
-
-date = datetime.now().strftime('%Y%m%d')
 
 while True:
     print("Enter valcode: \n"
@@ -43,18 +53,18 @@ while True:
         value = int(input("Enter the amount: "))
 
         if val_code == 1:
-            exchange_rates(date, value, "USD")
+            exchange_rates(value, "USD")
         elif val_code == 2:
-            exchange_rates(date, value, "BYN")
+            exchange_rates(value, "BYN")
         elif val_code == 3:
-            exchange_rates(date, value, "EUR")
+            exchange_rates(value, "EUR")
         elif val_code == 4:
-            exchange_rates(date, value, "RUB")
+            exchange_rates(value, "RUB")
         elif val_code == 5:
-            exchange_rates(date, value, "PLN")
+            exchange_rates(value, "PLN")
     elif val_code == 6:
         val_code = input("Enter the currency: ")
         value = float(input("Enter the amount: "))
-        exchange_rates(date, value, val_code)
+        exchange_rates(value, val_code)
     else:
         print("Incorrect value selected")
