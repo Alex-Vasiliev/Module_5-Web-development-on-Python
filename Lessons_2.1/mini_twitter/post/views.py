@@ -1,12 +1,20 @@
 from django.shortcuts import render
 from .models import Post, Comment
+from users.models import Users
 
 
-def list_post(request):
-    post = Post.objects.all()
-    return render(request, 'list_post.html', post)
+def list_post(request, username=None):
+    if username:
+        user = Users.objects.get(username=username)
+        post = Post.objects.filter(users=user)
+    else:
+        post = Post.objects.all()
+
+    context = {'post': post, 'username': user}
+    return render(request, 'post/post_list.html', context)
 
 
 def list_comments(request):
     comments = Comment.objects.all()
-    return render(request, 'list_comment.html', comments)
+    context = {'comments': comments}
+    return render(request, 'post/comments_list.html', context)

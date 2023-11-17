@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post list</title>
+</head>
+<body>
+    <h1>Список постів</h1>
+    <ul>
+        {% if username %}
+            <h2>Пости користувача {{ username }}</h2>
+        {% else %}
+            <h2>Всі пости</h2>
+            <hr>
+        {% endif %}
+    </ul>
+    <ul>
+        {% for post in post %}
+            <li>{{post.users}} {{post.title}} {{post.content}} {{post.created_at}}</li>
+            <hr>
+        {% endfor %}
+    </ul>
+</body>
+</html>

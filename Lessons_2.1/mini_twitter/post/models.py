@@ -8,6 +8,9 @@ class Post(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f'User: {self.users} Post: {self.title}'
+
 
 class Comment(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
@@ -15,3 +18,5 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f'Post: {self.post}'

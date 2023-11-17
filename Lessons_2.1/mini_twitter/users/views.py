@@ -4,4 +4,5 @@ from .models import Users
 
 def list_users(request):
     users = Users.objects.all()
-    return render(request, 'list_users.html', {'users': users})
+    context = {'users': users}
+    return render(request, 'users/user_list.html', context)
